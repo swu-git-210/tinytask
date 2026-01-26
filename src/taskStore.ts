@@ -44,6 +44,18 @@ export const toggleTask = (id: number): Task | null => {
   return null;
 };
 
+export const deleteTask = (id: number): boolean => {
+  // uncomment the code below to make this function works -->
+
+  // const taskIndex = tasks.findIndex((t) => t.id === id);
+  // if (taskIndex > -1) {
+  //   tasks.splice(taskIndex, 1);
+  //   return true;
+  // }
+
+  return false;
+};
+
 // Function to reset tasks, useful for testing
 export const resetTasks = () => {
   tasks = [

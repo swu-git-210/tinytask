@@ -55,6 +55,17 @@ app.patch('/tasks/:id/toggle', (req, res) => {
   res.json(updatedTask);
 });
 
+app.delete('/tasks/:id', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const success = taskStore.deleteTask(id);
+
+  if (!success) {
+    return res.status(404).json({ message: 'Task not found' });
+  }
+
+  res.status(204).send();
+});
+
 // Serve the frontend for any other route
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));

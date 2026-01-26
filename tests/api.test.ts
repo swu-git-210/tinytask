@@ -79,4 +79,29 @@ describe('Task Board API', () => {
       expect(res.status).toBe(404);
     });
   });
+
+  // 5. Test for deleting a task
+  describe('DELETE /tasks/:id', () => {
+    it('should return 204 No Content and remove the task', async () => {
+      const taskId = 2; // Task with ID 2: "Fix the Failing Test"
+
+      // Verify the task exists before deleting
+      let res = await request(app).get('/tasks');
+      expect(res.body.some((t: Task) => t.id === taskId)).toBe(true);
+
+      // Delete the task
+      res = await request(app).delete(`/tasks/${taskId}`);
+      expect(res.status).toBe(204);
+
+      // Verify the task is gone
+      res = await request(app).get('/tasks');
+      expect(res.body.some((t: Task) => t.id === taskId)).toBe(false);
+    });
+
+    it('should return 404 Not Found for a non-existent task ID', async () => {
+      const nonExistentId = 999;
+      const res = await request(app).delete(`/tasks/${nonExistentId}`);
+      expect(res.status).toBe(404);
+    });
+  });
 });

@@ -68,6 +68,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  const deleteTask = async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/tasks/${id}`, { method: 'DELETE' });
+      if (response.ok) {
+        await fetchTasks(); // Re-fetch to update UI
+      } else {
+        const errorData = await response.json();
+        showError(errorData.message || 'Failed to delete task.');
+      }
+    } catch (error) {
+      console.error('Failed to delete task:', error);
+      showError('Could not connect to the server to delete task.');
+    }
+  };
+
   // --- UI Functions ---
   const renderTasks = (tasks) => {
     todoListEl.innerHTML = '';
@@ -88,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
       taskEl.innerHTML = `
         <input type="checkbox" data-id="${task.id}" ${task.done ? 'checked' : ''}>
         <span>${task.title}</span>
+        <button class="delete-btn" data-id="${task.id}">&times;</button>
       `;
 
       if (task.done) {
@@ -130,6 +146,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.matches('.task-item input[type="checkbox"]')) {
       const id = parseInt(e.target.dataset.id, 10);
       toggleTaskStatus(id);
+    }
+  });
+
+  document.body.addEventListener('click', (e) => {
+    if (e.target.matches('.delete-btn')) {
+      const id = parseInt(e.target.dataset.id, 10);
+      if (confirm('Are you sure you want to delete this task?')) {
+        deleteTask(id);
+      }
     }
   });
 
